@@ -49,9 +49,9 @@ class DCGenerator(nn.Module):
         ##   FILL THIS IN: CREATE ARCHITECTURE   ##
         ###########################################
         kernel_size = 4
-        out_channels_layer_1 = 128
-        out_channels_layer_2 = 64
-        out_channels_layer_3 = 32
+        out_channels_layer_1 = conv_dim*4
+        out_channels_layer_2 = conv_dim*2
+        out_channels_layer_3 = conv_dim
         out_channels_layer_4 = 3
         """  input = noise_sizex1x1 """
 
@@ -109,15 +109,15 @@ class CycleGenerator(nn.Module):
         ###########################################
 
         # 1. Define the encoder part of the generator (that extracts features from the input image)
-        self.conv1 = conv(in_channels=3, out_channels=32, kernel_size=4, init_zero_weights=init_zero_weights)
-        self.conv2 = conv(in_channels=32, out_channels=64, kernel_size=4, init_zero_weights=init_zero_weights)
+        self.conv1 = conv(in_channels=3, out_channels=conv_dim, kernel_size=4, init_zero_weights=init_zero_weights)
+        self.conv2 = conv(in_channels=conv_dim, out_channels=conv_dim*2, kernel_size=4, init_zero_weights=init_zero_weights)
 
         # 2. Define the transformation part of the generator
-        self.resnet_block = ResnetBlock(64)
+        self.resnet_block = ResnetBlock(conv_dim*2)
 
         # 3. Define the decoder part of the generator (that builds up the output image from features)
-        self.deconv1 = deconv(in_channels=64, out_channels=32, kernel_size=4)
-        self.deconv2 = deconv(in_channels=32, out_channels=3, kernel_size=4, batch_norm=False)
+        self.deconv1 = deconv(in_channels=conv_dim*2, out_channels=conv_dim, kernel_size=4)
+        self.deconv2 = deconv(in_channels=conv_dim, out_channels=3, kernel_size=4, batch_norm=False)
 
     def forward(self, x):
         """Generates an image conditioned on an input image.
@@ -154,9 +154,9 @@ class DCDiscriminator(nn.Module):
         ###########################################
         in_channel = 3
         kernel_size = 4
-        out_channel_layer_1 = 32
-        out_channel_layer_2 = 64
-        out_channel_layer_3 = 128
+        out_channel_layer_1 = conv_dim
+        out_channel_layer_2 = conv_dim*2
+        out_channel_layer_3 = conv_dim*4
         out_channel_layer_4 = 1
         init_zero_weights = True
 
