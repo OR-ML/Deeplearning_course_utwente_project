@@ -443,5 +443,8 @@ if __name__ == '__main__':
             opts.sample_dir = '{}_pretrained'.format(opts.sample_dir)
             #opts.sample_every = 20
 
+    if opts.g_conv_dim!=32 or opts.d_conv_dim!=32:
+        opts.sample_dir = '{}_conv_dim'.format(opts.sample_dir)
+
     print_opts(opts)
     main(opts)
